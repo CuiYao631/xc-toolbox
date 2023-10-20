@@ -1,7 +1,8 @@
-# Tauri + Vanilla
+# XC-ToolBox
 
-This template should help get you started developing with Tauri in vanilla HTML, CSS and Javascript.
+## 小崔工具箱
 
-## Recommended IDE Setup
+功能：一些小工具，方便自己使用,后期会不断更新
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+目标：方便自己，方便大家
+
