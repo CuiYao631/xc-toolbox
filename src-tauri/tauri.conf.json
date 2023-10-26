@@ -38,13 +38,13 @@
     },
     "windows": [
       {
-        "label": "launch",
+        "label": "home",
         "alwaysOnTop":true, 
         "fullscreen": false,
         "resizable": true,
         "title": "tauriapp",
         "width": 640,
-        "height": 128,
+        "height": 300,
         "transparent":true,
         "decorations": false,
         "center": true,

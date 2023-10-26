@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+h1 {
+    font-size: 24px;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.8); /* 使用rgba设置背景透明度为 80% */
+    margin: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px); /* 应用10像素的模糊效果，可以根据需要调整模糊程度 */
+}
+
+.text-center {
+    text-align: center;
+}
+
+.software-info,
+.system-info {
+    margin-bottom: 20px;
+}

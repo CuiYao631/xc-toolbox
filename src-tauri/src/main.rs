@@ -53,7 +53,7 @@ fn register_shortcut(app: &mut App) -> Result<(), tauri::Error> {
 }
 
 //启动面板
-const WINDOW: &str = "launch";
+const WINDOW: &str = "home";
 fn toggle_launchpad(app: &AppHandle) {
     let window = app.get_window(WINDOW).expect("window not found");
     if let Ok(true) = window.is_visible() {
@@ -137,11 +137,11 @@ fn about(app: &AppHandle) {
       ).
     title("关于").
       skip_taskbar(false).
-      //transparent(true).
+      transparent(true).
       resizable(false).
       fullscreen(false).
       always_on_top(true).
-      inner_size(400.0, 590.0).
+      inner_size(400.0, 600.0).
       build().unwrap();
 }
 
@@ -156,14 +156,15 @@ fn send_data_to_frontend(window: tauri::Window, data: String) {
 
 #[derive(Serialize, Deserialize)]
 struct SystemInfo {
+    //操作系统
+    os: String,
+    //cpu型号
+    cpu_name: String,
     //总内存
     memory_total: f32,
-    //已使用内存
-    memory_used: f32,
-    //cpu使用率
-    cpu_used: f32,
-    //主机名
-	hostname: String
+    //磁盘大小
+    // disk_total: f32,
+ 
 }
 
 //获取系统信息
@@ -173,15 +174,21 @@ fn system_info()->SystemInfo{
     let mut sys = sysinfo::System::new_all();
     //刷新系统信息
     sys.refresh_all();
-    let memory_total = sys.total_memory() as f32 / 1024.0 / 1024.0;
-    let memory_used = sys.used_memory() as f32 / 1024.0 / 1024.0;
-    let cpu_used = sys.global_cpu_info().cpu_usage() as f32;
-    let hostname = sys.host_name().unwrap();
+    let os = sys.long_os_version().unwrap();
+    let cpu_name = sys.global_cpu_info().name().to_string();
+    let memory_total = sys.total_memory() as f32 / 1024.0 / 1024.0 / 1024.0;
+    //获取磁盘列表
+    // let mut s = System::new();
+    // s.refresh_disks_list();
+    // for disk in s.disks() {
+    //     println!("{:?}", disk);
+    // }
+   
+
     SystemInfo{
+        os,
+        cpu_name,
         memory_total,
-        memory_used,
-        cpu_used,
-        hostname
     }
 }
 
