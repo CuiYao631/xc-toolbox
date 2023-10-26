@@ -4,6 +4,8 @@ use tauri::{
     App, AppHandle, CustomMenuItem, GlobalShortcutManager, Manager,
      SystemTray, SystemTrayEvent,SystemTrayMenu, SystemTrayMenuItem,
 };
+use serde::{Deserialize, Serialize};
+use sysinfo::{System, SystemExt, CpuExt};
 
 fn main() {
     let hide = CustomMenuItem::new("hide".to_string(), "显示窗口");
@@ -20,7 +22,11 @@ fn main() {
     let system_tray = SystemTray::new().with_menu(tray_menu);
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![
+            greet,//接收前端指令
+            send_data_to_frontend,//发送数据给前端
+            system_info//获取系统信息
+            ])
         .setup(move |app| {
             if let Err(e) = register_shortcut(app) {
                 eprintln!("error registering shortcut: {}", e);
@@ -96,6 +102,7 @@ fn menu_hanfle(app: &AppHandle, event: SystemTrayEvent) {
                 }
                 "about" => {
                     about(app);
+
                 }
                 _ => {}
             }
@@ -117,7 +124,7 @@ fn seting(app: &AppHandle) {
       resizable(false).
       fullscreen(false).
       always_on_top(true).
-      inner_size(400.0, 300.0).
+      inner_size(800.0, 600.0).
       build().unwrap();
 }
 
@@ -134,8 +141,48 @@ fn about(app: &AppHandle) {
       resizable(false).
       fullscreen(false).
       always_on_top(true).
-      inner_size(400.0, 300.0).
+      inner_size(400.0, 590.0).
       build().unwrap();
+}
+
+#[tauri::command]
+fn send_data_to_frontend(window: tauri::Window, data: String) {
+    // 发送数据给前端
+    let _=window.emit(
+        "dataFromRust",  // 与前端 JavaScript 代码匹配的事件名称
+        Some(data),       // 发送的数据
+    );
+}
+
+#[derive(Serialize, Deserialize)]
+struct SystemInfo {
+    //总内存
+    memory_total: f32,
+    //已使用内存
+    memory_used: f32,
+    //cpu使用率
+    cpu_used: f32,
+    //主机名
+	hostname: String
+}
+
+//获取系统信息
+#[tauri::command]
+fn system_info()->SystemInfo{
+    //获取系统信息
+    let mut sys = sysinfo::System::new_all();
+    //刷新系统信息
+    sys.refresh_all();
+    let memory_total = sys.total_memory() as f32 / 1024.0 / 1024.0;
+    let memory_used = sys.used_memory() as f32 / 1024.0 / 1024.0;
+    let cpu_used = sys.global_cpu_info().cpu_usage() as f32;
+    let hostname = sys.host_name().unwrap();
+    SystemInfo{
+        memory_total,
+        memory_used,
+        cpu_used,
+        hostname
+    }
 }
 
 
